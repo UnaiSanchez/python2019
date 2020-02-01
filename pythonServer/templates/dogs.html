@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Doggos</title>
+        <link href="https://fonts.googleapis.com/css?family=Poppins:900&display=swap" rel="stylesheet" />
+        <style>
+            html {
+                font-family: Poppins;
+                font-size: 10px;
+            }
+
+            body {
+                margin: 0;
+                height: 100vh;
+                overflow: hidden;
+                background-color: skyblue;
+                background-image: linear-gradient(90deg, skyblue 0%, steelblue 100%);
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            h1 {
+                color: white;
+                font-size: 5rem;
+                text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            }
+
+            #dog {
+                border: dashed white 1px;
+            }
+
+            #dog img,
+            #dog video {
+                display: block;
+                max-width: 60vw;
+                max-height: 80vh;
+                box-shadow: 0 0 50px rgba(255, 255, 255, 0.5);
+            }
+        </style>
+        <script>
+            const url = "/dog_url_dont_open";
+            let dogs;
+            window.addEventListener("DOMContentLoaded", () => {
+                dogs = document.getElementById("dog");
+                if (url.length > 0) {
+                    get();
+                }
+            });
+            function get() {
+                fetch(url)
+                    .then(res => res.json())
+                    .then(json => {
+                        if (json.type && json.type == "video") {
+                            const video = document.createElement("video");
+                            video.src = json.url;
+                            Array.from(dogs.children).forEach(child => child.remove());
+                            dogs.appendChild(video);
+                            video.play();
+
+                            video.addEventListener("ended", get);
+                        } else {
+                            const image = document.createElement("img");
+                            image.src = json.url;
+                            image.addEventListener("load", () => {
+                                Array.from(dogs.children).forEach(child => child.remove());
+                                dogs.appendChild(image);
+
+                                setTimeout(get, 5000);
+                            });
+                        }
+                    });
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>Random Dogs</h1>
+        <div id="dog"></div>
+    </body>
+</html>

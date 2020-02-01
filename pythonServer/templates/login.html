@@ -1,0 +1,109 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Login Page</title>
+        <style>
+            html {
+                font-family: calibri;
+                font-size: 15pt;
+                color: #515151;    
+            }
+            body {
+                margin: 0;
+                height: 100vh;
+                overflow: hidden;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                background: linear-gradient(white,{{bg_colour}});
+                box-shadow: 0 0 50px 10px rgba(0, 0, 0, 0.2) inset;
+            }
+            #container > div {
+                display: none;
+                flex-direction: column;
+                justify-content: space-around;
+
+                box-sizing: border-box;
+                width: 450px;
+                height: 262px;
+                padding: 50px;
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(100, 50, 0, 0.4);
+            }
+            #container > div:first-child {
+                display: flex;
+            }
+            .row {
+                margin: 20px;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }
+            input,
+            button {
+                font-size: 0.8rem;
+                margin-left: 10px;
+                padding: 10px 20px;
+                border: 1px solid #515151;
+                border-radius: 4px;
+            }
+            button {
+                cursor: pointer;
+                background-color: rgba(255, 100, 0, 0.1);
+            }
+        </style>
+        <script type="text/javascript">
+            let login, message, close;
+            let username, password;
+            let url = "{{ url }}";
+            window.addEventListener("DOMContentLoaded", () => {
+                login = document.getElementById("login");
+                message = document.getElementById("message");
+                username = document.getElementById("username");
+                password = document.getElementById("password");
+                close = document.getElementById("close");
+                username.addEventListener("keypress", e => (e.key == "Enter" ? password.focus() : null));
+                password.addEventListener("keypress", e => (e.key == "Enter" ? submit() : null));
+                close.addEventListener("click", displayLogin);
+            });
+            const submit = () => {
+                fullUrl = url + `?username=${username.value}&password=${password.value}`;
+                fetch(fullUrl)
+                    .then(res => res.text())
+                    .then(text => displayMessage(text));
+            };
+            const displayMessage = text => {
+                login.style.display = "none";
+                document.querySelector("#message span").innerText = text;
+                message.style.display = "flex";
+            };
+            const displayLogin = () => {
+                message.style.display = "none";
+                login.style.display = "flex";
+            };
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="login">
+                <div class="row">
+                    <label for="username">Username:</label>
+                    <input id="username" type="text" />
+                </div>
+                <div class="row">
+                    <label for="password">Password:</label>
+                    <input id="password" type="password" />
+                </div>
+            </div>
+            <div id="message">
+                <div class="row">
+                    <span></span>
+                    <button id="close">X</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
